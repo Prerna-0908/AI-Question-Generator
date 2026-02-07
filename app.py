@@ -40,6 +40,21 @@ def infer_difficulty(subdomain):
     else:
         return "Advanced"
 
+def better_answer(row):
+    return f"""
+**What it is:**  
+{row['Answer']}
+
+**Why it matters:**  
+This topic is important because it is commonly used in real-world applications and frequently asked in interviews.
+
+**Where it is used:**  
+Used in practical systems related to {row['Domain']}.
+
+**Interview tip:**  
+Be clear with the definition and give one real-world example.
+"""
+
 #UI
 st.set_page_config(page_title="AI Interview Qestion Generator", layout= "centered")
 st.title("AI Interview Question Generator")
@@ -57,6 +72,6 @@ if st.button("Generate Question"):
         st.subheader("Question")
         st.write(transform_question(row["Question"], type))
         with st.expander("Show Answer"):
-            st.write(row["Answer"])
+            st.write(better_answer(row))
         difficulty = infer_difficulty(row["Subdomain"])    
         st.caption(f"Difficulty: **{'Difficulty'}**")
