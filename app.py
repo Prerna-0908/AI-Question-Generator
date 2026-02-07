@@ -41,7 +41,7 @@ qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
     result = fetch_question(domain, 1)
-    if results is not None:
+    if result is not None:
         row = result.iloc[0]
         st.subheader("Question")
         st.write(transform_question(row["Question"], type))
