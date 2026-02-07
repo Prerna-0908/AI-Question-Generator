@@ -3,7 +3,7 @@ import pandas as pd
 import random
 
 if "session_questions" not in st.session_state:
-    st.session_state.session_questions = []
+    st.session_state.session_questions = pd.DataFrame()
 
 if "current_index" not in st.session_state:
     st.session_state.current_index = 0
@@ -87,7 +87,7 @@ if st.button("Start Practice Session"):
     )
     st.session_state.current_index = 0
 
-if st.session_state.session_questions != []:
+if not st.session_state.session_questions.empty:
     idx = st.session_state.current_index
     questions = st.session_state.session_questions
 
