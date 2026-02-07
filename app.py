@@ -29,6 +29,17 @@ def transform_question(question, qtype):
     else:
         return question
 
+def infer_difficulty(subdomain):
+    easy = ["Basics", "EDA", "Probability"]
+    medium = ["Joins", "Regression", "Tokenization"]
+
+    if subdomain in easy:
+        return "Beginner"
+    elif subdomain in medium:
+        return "Intermediate"
+    else:
+        return "Advanced"
+
 #UI
 st.set_page_config(page_title="AI Interview Qestion Generator", layout= "centered")
 st.title("AI Interview Question Generator")
@@ -47,6 +58,7 @@ if st.button("Generate Question"):
         st.write(transform_question(row["Question"], type))
         with st.expander("Show Answer"):
             st.write(row["Answer"])
+        difficulty = infer_difficulty(row["Sbdomain"])    
         st.caption(f"Difficulty: **{row['Difficulty']}**")
     else:
         st.warning("No questions available for this domain.")
