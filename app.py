@@ -1,6 +1,13 @@
 import streamlit as st
 import pandas as pd
 import random
+
+if "session_questions" not in st.session_state:
+    st.session_state.session_questions = []
+
+if "current_index" not in st.session_state:
+    st.session_state.current_index = 0
+
 @st.cache_data
 def load_data():
     data = pd.read_csv("interview_questions.csv")
@@ -54,6 +61,15 @@ Used in practical systems related to {row['Domain']}.
 **Interview tip:**  
 Be clear with the definition and give one real-world example.
 """
+def why_interviewers_ask(row):
+    domain = row["Domain"]
+    sub = row["Subdomain"]
+
+    return (
+        f"This question is asked to evaluate your understanding of {sub} "
+        f"and how well you can apply {domain} concepts to real-world problems."
+    )
+
 
 #UI
 st.set_page_config(page_title="AI Interview Qestion Generator", layout= "centered")
@@ -65,13 +81,29 @@ question_types = ["Theory", "Scenario", "MCQ", "Coding"]
 domain = st.selectbox("Choose Domain", domains)
 qtype = st.selectbox("Question Type", question_types)
 
-if st.button("Generate Question"):
-    result = fetch_question(domain, 1)
-    if result is not None:
-        row = result.iloc[0]
-        st.subheader("Question")
-        st.write(transform_question(row["Question"], type))
+if st.button("Start Practice Session"):
+    st.session_state.session_questions = (
+        fetch_question(domain, 5).reset_index(drop=True)
+    )
+    st.session_state.current_index = 0
+
+if st.session_state.session_questions != []:
+    idx = st.session_state.current_index
+    questions = st.session_state.session_questions
+
+    if idx < len(questions):
+        row = questions.iloc[idx]
+
+        st.subheader(f"Question {idx + 1}")
+        st.write(transform_question(row["Question"], qtype))
+
         with st.expander("Show Answer"):
             st.write(better_answer(row))
-        difficulty = infer_difficulty(row["Subdomain"])    
-        st.caption(f"Difficulty: **{'Difficulty'}**")
+
+        with st.expander("Why interviewers ask this"):
+            st.write(why_interviewers_ask(row))
+
+        if st.button("Next Question"):
+            st.session_state.current_index += 1
+    else:
+        st.success("Practice session completed!")
