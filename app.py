@@ -44,7 +44,7 @@ if st.button("Generate Question"):
     if result.empty:
         st.warning("No questions found for this domain.")
     else:
-        row.result.iloc[0]
+        result.iloc[0]
         st.subheader("Question")
         st.write(transform_question(row["Question"], qtype))
         with st.expander("Show Answer"):
