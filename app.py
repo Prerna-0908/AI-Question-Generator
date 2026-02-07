@@ -40,11 +40,11 @@ domain = st.selectbox("Choose Domain", domains)
 qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
-    result = fetch_question(domain, 1).iloc[0]
+    row = fetch_question(domain, 1).iloc[0]
     if result.empty:
         st.warning("No questions found for this domain.")
     else:
-        result.iloc[0]
+       row.result.iloc[0]
         st.subheader("Question")
         st.write(transform_question(row["Question"], qtype))
         with st.expander("Show Answer"):
