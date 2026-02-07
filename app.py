@@ -41,14 +41,12 @@ qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
     result = fetch_question(domain, 1)
-    if result is not None:
+    if results is not None:
         row = result.iloc[0]
-        st.sbheader("Question")
-       st.write(transform_question(row["Question"], qtype))
-
+        st.subheader("Question")
+        st.write(transform_question(row["Question"], type))
         with st.expander("Show Answer"):
             st.write(row["Answer"])
-
         st.caption(f"Difficulty: **{row['Difficulty']}**")
     else:
         st.warning("No questions available for this domain.")
