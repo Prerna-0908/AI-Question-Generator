@@ -40,7 +40,7 @@ domain = st.selectbox("Choose Domain", domains)
 qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
-    result = fetch_questions(domain, 1)
+    result = fetch_question(domain, 1)
     if result.empty:
         st.warning("No questions found for this domain.")
     else:
