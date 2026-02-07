@@ -3,7 +3,7 @@ import pandas as pd
 import random
 @st.cache_data
 def load_data():
-    data = pd.read_csv("interview_questions")
+    data = pd.read_csv("interview_questions.csv")
     data["Asked_Count"] = 0
     return data
 
