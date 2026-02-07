@@ -7,19 +7,21 @@ def load_data():
     data["Asked_Count"] = 0
     return data
 
-data =load_data()
+data = load_data()
 
 #logic Function
 def fetch_question(domain, n=1):
-    suubset = data[data["Domain"] ==domain].copy()
+    subset = data[data["Domain"] ==domain].copy()
+    if subset.empty:
+        return subset
     subset["weight"] = 1 / (subset["Asked_Count"] + 1)
     selected = subset.sample(n=min(n,len(subset)),weights= subset["weight"])
     data.loc[selected.index,"Asked_Count"] +=1
     return selected
 
-def transform_qestion(question, type):
+def transform_question(question, qtype):
     if qtype == "Scenario":
-        return f"Scenario Based: {question} Explain how wold yo handle this in real world."
+        return f"Scenario Based: {question}\nExplain how wold yo handle this in real world."
     elif type == "MCQ":
         return f"{question} (Choose the correct option)"
     elif type == "Coding":
@@ -30,7 +32,7 @@ def transform_qestion(question, type):
 #UI
 st.set_page_config(page_title="AI Interview Qestion Generator", layout= "centered")
 st.title("AI Interview Question Generator")
-st.caption("Smart -Adaptive -Zero PAid APIs")
+st.caption("Smart -Adaptive -Zero Paid APIs")
 domains = sorted(data["Domain"].unique())
 question_types = ["Theory", "Scenario", "MCQ", "Coding"]
 
@@ -38,13 +40,14 @@ domain = st.selectbox("Choose Domain", domains)
 qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
-    row = fetch_questions(domain, 1).iloc[0]
-
-    st.subheader("Question")
-    st.write(transform_question(row["Question"], qtype))
-
-    with st.expander("Show Answer"):
-        st.write(row["Answer"])
-
-    st.caption(f"Difficulty: **{row['Difficulty']}**")
-    
+    result = fetch_questions(domain, 1)
+    if result.empty:
+        st.warning("No questions found for this domain.")
+    else:
+        row.result.iloc[0]
+        st.subheader("Question")
+        st.write(transform_question(row["Question"], qtype))
+        with st.expander("Show Answer"):
+            st.write(row["Answer"])
+            if "Difficulty" in row:
+                st.caption(f"Difficulty: **{row['Difficulty']}**")
