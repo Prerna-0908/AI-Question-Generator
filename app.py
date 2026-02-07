@@ -59,6 +59,4 @@ if st.button("Generate Question"):
         with st.expander("Show Answer"):
             st.write(row["Answer"])
         difficulty = infer_difficulty(row["Subdomain"])    
-        st.caption(f"Difficulty: **{row['Difficulty']}**")
-    else:
-        st.warning("No questions available for this domain.")
+        st.caption(f"Difficulty: **{'Difficulty'}**")
