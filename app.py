@@ -13,7 +13,7 @@ data = load_data()
 def fetch_question(domain, n=1):
     subset = data[data["Domain"] ==domain].copy()
     if subset.empty:
-        return subset
+        return None
     subset["weight"] = 1 / (subset["Asked_Count"] + 1)
     selected = subset.sample(n=min(n,len(subset)),weights= subset["weight"])
     data.loc[selected.index,"Asked_Count"] +=1
@@ -40,14 +40,15 @@ domain = st.selectbox("Choose Domain", domains)
 qtype = st.selectbox("Question Type", question_types)
 
 if st.button("Generate Question"):
-    row = fetch_question(domain, 1).iloc[0]
-    if result.empty:
-        st.warning("No questions found for this domain.")
-    else:
-       row.result.iloc[0]
-        st.subheader("Question")
-        st.write(transform_question(row["Question"], qtype))
+    result = fetch_question(domain, 1)
+    if result is not None:
+        row = result.iloc[0]
+        st.sbheader("Question")
+       st.write(transform_question(row["Question"], qtype))
+
         with st.expander("Show Answer"):
             st.write(row["Answer"])
-            if "Difficulty" in row:
-                st.caption(f"Difficulty: **{row['Difficulty']}**")
+
+        st.caption(f"Difficulty: **{row['Difficulty']}**")
+    else:
+        st.warning("No questions available for this domain.")
